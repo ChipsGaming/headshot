@@ -17,8 +17,6 @@ define(function(require){
     $server = $('#server'),
     $serverType = $('#server_type'),
     $actions = $('#actions'),
-    $allActions = $('#allActions'),
-    $allServerActions = $('#allServerActions'),
     $x = $('#x'),
     $serverX = $('#serverX'),
     $xDiff = $('#xDiff');
@@ -29,8 +27,7 @@ define(function(require){
   var obj = new Sprite('clientObject', {x: 0}),
     timer = new Timer(30),
     keyboard = new Keyboard,
-    actions = [],
-    allActions = 0;
+    actions = [];
 
   $serverType.change(function(){
     obj.update({x: 0});
@@ -41,9 +38,9 @@ define(function(require){
       $server.hide();
     }
     else if($serverType.val() == 'mock'){
+      serverMock.run();
       server = serverMock;
       $server.show();
-      server.run();
     }
     else{
       server = serverReal;
@@ -67,7 +64,7 @@ define(function(require){
 
   timer.update = function(){
     $x.html(obj.state.x);
-    if(server !== undefined){
+    if(server !== undefined && server.sprite !== undefined){
       $serverX.html(server.sprite.state.x);
       $xDiff.html(obj.state.x - server.sprite.state.x);
     }
@@ -83,13 +80,9 @@ define(function(require){
       return;
     }
 
-    allActions++;
-    $allActions.html(allActions);
-
     actions.push(action);
     if(server !== undefined){
       server.action(action);
-      $allServerActions.html(server.allActions);
     }
     applyAction(action, obj); // Прогнозирование
   };

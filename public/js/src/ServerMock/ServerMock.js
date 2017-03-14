@@ -1,33 +1,34 @@
 define(function(require){
-  var $ = require('jquery');
+  var ActionsQueue = require('app/ServerMock/ActionsQueue'),
+    $ = require('jquery');
 
   function ServerMock(client, sprite){
     this.client = client;
     this.sprite = sprite;
-    this.actionsQueue = [];
-    this.allActions = 0;
     this.latency = 0;
     this.update = 1;
+
+    this.actionsQueue = new ActionsQueue;
     this.interval = undefined;
   }
 
   ServerMock.prototype.action = function(action){
     setTimeout($.proxy(function(){
       this.actionsQueue.push(action);
-      this.allActions++;
     }, this), this.latency);
   };
 
   ServerMock.prototype.run = function(){
     this.interval = setInterval($.proxy(function(){
-      if(this.actionsQueue.length == 0){
+      if(!this.actionsQueue.has()){
         return;
       }
-      var action = this.actionsQueue[0];
-      this.actionsQueue.splice(0, 1);
 
+      var action = this.actionsQueue.shift()
       this.applyAction(action);
     }, this), this.update);
+
+    return this;
   };
 
   ServerMock.prototype.stop = function(){
@@ -36,6 +37,8 @@ define(function(require){
     }
     clearInterval(this.interval);
     this.interval = undefined;
+
+    return this;
   };
 
   ServerMock.prototype.applyAction = function(action){
