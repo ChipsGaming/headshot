@@ -1,4 +1,4 @@
-Огигинальная статья: [Fast paced multiplayer](http://www.gabrielgambetta.com/fast_paced_multiplayer.html).
+Оригинальная статья: [Fast paced multiplayer](http://www.gabrielgambetta.com/fast_paced_multiplayer.html).
 
 # Проблемы мулиплеера
 Основной проблемной в мультиплеерных играх является разница (latency) между действием пользователя и реакцией сервера на него, называемая задержкой. Для пользователя, играющего с высокой задержкой, игра выглядит менее отзывчивой и прерывистой.
