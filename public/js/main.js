@@ -2,8 +2,8 @@ requirejs.config({
   baseUrl: '/',
   paths: {
     // Libs
-    jquery: 'vendor/jquery',
-    Headshot: 'vendor/headshot',
+    jquery: 'jquery/dist/jquery.min',
+    Headshot: 'Client',
 
     app: 'js/src'
   },

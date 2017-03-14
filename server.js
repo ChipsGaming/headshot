@@ -26,6 +26,8 @@ eurecaServer.exports.action = function(action){
   this.clientProxy.sync(new Snapshot(action.id, currentState));
 };
 
+app.use(express.static('node_modules'));
+app.use(express.static('Headshot'));
 app.use(express.static('public'));
 app.get('/', function(req, res, next){
   res.sendfile('public/index.html');
