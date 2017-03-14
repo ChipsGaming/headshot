@@ -8,12 +8,17 @@ define(function(require){
 
   var client = new Eureca.Client,
     actionFactory = new ActionFactory,
-    serverMock = new ServerMock(client, 250, new Sprite('serverObject', {x: 0})),
+    serverMock = new ServerMock(client, 250, 100, new Sprite('serverObject', {x: 0})),
     serverReal = undefined,
     server = undefined,
     $server = $('#server'),
     $serverType = $('#server_type'),
-    $actions = $('#actions');
+    $actions = $('#actions'),
+    $allActions = $('#allActions'),
+    $allServerActions = $('#allServerActions'),
+    $x = $('#x'),
+    $serverX = $('#serverX'),
+    $xDiff = $('#xDiff');
 
   $serverType.val('off');
   $server.hide();
@@ -21,11 +26,13 @@ define(function(require){
   var obj = new Sprite('clientObject', {x: 0}),
     timer = new Timer(30),
     keyboard = new Keyboard,
-    actions = [];
+    actions = [],
+    allActions = 0;
 
   $serverType.change(function(){
     obj.update({x: 0});
     serverMock.sprite.update({x: 0});
+    serverMock.stop();
     if($serverType.val() == 'off'){
       server = undefined;
       $server.hide();
@@ -33,6 +40,7 @@ define(function(require){
     else if($serverType.val() == 'mock'){
       server = serverMock;
       $server.show();
+      server.run();
     }
     else{
       server = serverReal;
@@ -55,7 +63,13 @@ define(function(require){
   }
 
   timer.update = function(){
+    $x.html(obj.state.x);
+    if(server !== undefined){
+      $serverX.html(server.sprite.state.x);
+      $xDiff.html(obj.state.x - server.sprite.state.x);
+    }
     $actions.html(actions.length);
+
     if(keyboard.isLeft){
       var action = actionFactory.create({type: 'left'});
     }
@@ -65,9 +79,14 @@ define(function(require){
     else{
       return;
     }
+
+    allActions++;
+    $allActions.html(allActions);
+
     actions.push(action);
     if(server !== undefined){
       server.action(action);
+      $allServerActions.html(server.allActions);
     }
     applyAction(action, obj); // Прогнозирование
   };

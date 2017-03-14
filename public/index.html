@@ -21,22 +21,35 @@
 				</option>
 			</select>
 		</div>
-		<h3>Состояние клиента:</h3>
-		<div class="client-state">
-			<div class="object" id="clientObject"></div>
-		</div>
-		<ul>
-			<li>Неподтвержденных действий: <span id="actions">0</span></li>
-			<li>FPS: 30</li>
-		</ul>
-		<div id="server">
-			<h3>Состояние сервера:</h3>
-			<div class="server-state">
-				<div class="object" id="serverObject"></div>
+		<div class="row">
+			<div class="col-3">
+				<h3>Состояние клиента:</h3>
+				<div class="client-state">
+					<div class="object" id="clientObject"></div>
+				</div>
+				<div id="server">
+					<h3>Состояние сервера:</h3>
+					<div class="server-state">
+						<div class="object" id="serverObject"></div>
+					</div>
+				</div>
 			</div>
-			<ul>
-				<li>Задержка: 250ms</li>
-			</ul>
+			<div class="col-1">
+				<h3>Статистика:</h3>
+				<ul>
+					<li>
+						X:
+						<span id="x">0</span>/
+						<span id="serverX">0</span>/
+						<span id="xDiff">0</span>
+					</li>
+					<li>Всего действий: <span id="allActions">0</span>/<span id="allServerActions">0</span></li>
+					<li>Неподтвержденных действий: <span id="actions">0</span></li>
+					<li>FPS: 30</li>
+					<li>Update: 100ms</li>
+					<li>Задержка: 250ms</li>
+				</ul>
+			</div>
 		</div>
 	</body>
 </html>
