@@ -3,11 +3,10 @@ define(function(require){
 
   function ActionFactory(actionPrototype){
     this.actionPrototype = actionPrototype || Action;
-    this.currentId = 0;
   }
 
   ActionFactory.prototype.generateId = function(){
-    return this.currentId++;
+    return Date.now();
   };
 
   ActionFactory.prototype.create = function(data){

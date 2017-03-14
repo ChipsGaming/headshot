@@ -1,5 +1,5 @@
 define(function(require){
-  var ActionsQueue = require('app/ServerMock/ActionsQueue'),
+  var ActionsQueue = require('Headshot/Action/ActionsQueue'),
     $ = require('jquery');
 
   function ServerMock(client, sprite){
@@ -23,9 +23,8 @@ define(function(require){
       if(!this.actionsQueue.has()){
         return;
       }
-
-      var action = this.actionsQueue.shift()
-      this.applyAction(action);
+      this.simulateQueue();
+      this.sync();
     }, this), this.update);
 
     return this;
@@ -41,7 +40,14 @@ define(function(require){
     return this;
   };
 
-  ServerMock.prototype.applyAction = function(action){
+  ServerMock.prototype.simulateQueue = function(){
+      while(this.actionsQueue.has()){
+        var action = this.actionsQueue.shift()
+        this.simulateAction(action);
+      }
+  };
+
+  ServerMock.prototype.simulateAction = function(action){
     if(action.data.type == 'left'){
       this.sprite.update({
         x: this.sprite.state.x - 5
@@ -52,9 +58,11 @@ define(function(require){
         x: this.sprite.state.x + 5
       });
     }
+  };
 
+  ServerMock.prototype.sync = function(){
     var snapshot = {
-      id: action.id,
+      id: id,
       state: this.sprite.state
     };
     this.client.exports.sync(snapshot);

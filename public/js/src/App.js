@@ -1,5 +1,6 @@
 define(function(require){
   var ActionFactory = require('Headshot/Action/ActionFactory'),
+    ActionsQueue = require('Headshot/Action/ActionsQueue'),
     Sprite = require('app/Display/Sprite'),
     Keyboard = require('app/Input/Keyboard'),
     Timer = require('app/Timer/Timer'),
@@ -27,7 +28,7 @@ define(function(require){
   var obj = new Sprite('clientObject', {x: 0}),
     timer = new Timer(30),
     keyboard = new Keyboard,
-    actions = [];
+    pendingActions = new ActionsQueue;
 
   $serverType.change(function(){
     obj.update({x: 0});
@@ -49,7 +50,7 @@ define(function(require){
     $serverType.blur();
   });
 
-  function applyAction(action, obj){
+  function simulateAction(action, obj){
     if(action.data.type == 'left'){
       obj.update({
         x: obj.state.x - 5
@@ -62,13 +63,24 @@ define(function(require){
     }
   }
 
+  function reconciliation(actionsQueue, snapshot){
+    while(actionsQueue.has()){
+      var action = actionsQueue.peep();
+      if(action.id > snapshot.id){
+        simulateAction(action, obj);
+      }
+      else{
+        actionsQueue.shift();
+      }
+    }
+  }
+
   timer.update = function(){
     $x.html(obj.state.x);
     if(server !== undefined && server.sprite !== undefined){
       $serverX.html(server.sprite.state.x);
       $xDiff.html(obj.state.x - server.sprite.state.x);
     }
-    $actions.html(actions.length);
 
     if(keyboard.isLeft){
       var action = actionFactory.create({type: 'left'});
@@ -80,11 +92,13 @@ define(function(require){
       return;
     }
 
-    actions.push(action);
     if(server !== undefined){
       server.action(action);
     }
-    applyAction(action, obj); // Прогнозирование
+    pendingActions.push(action);
+
+    // Прогнозирование
+    simulateAction(action, obj);
   };
   timer.run();
 
@@ -92,18 +106,9 @@ define(function(require){
     obj.update({
       x: snapshot.state.x
     });
+
     // Согласование
-    var i = 0;
-    while(i < actions.length){
-      var action = actions[i];
-      if(action.id <= snapshot.id){
-        actions.splice(i, 1);
-      }
-      else{
-        applyAction(action, obj);
-        i++;
-      }
-    }
+    reconciliation(pendingActions, snapshot)
   };
 
   client.ready(function(serverProxy){
