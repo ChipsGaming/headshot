@@ -58,23 +58,18 @@ define(function(require){
     $actions.html(actions.length);
     if(keyboard.isLeft){
       var action = actionFactory.create({type: 'left'});
-      actions.push(action);
-      if(server !== undefined){
-        server.action(action);
-      }
-      applyAction(action, obj); // Прогнозирование
     }
     else if(keyboard.isRight){
       var action = actionFactory.create({type: 'right'});
-      actions.push(action);
-      if(server !== undefined){
-        server.action(action);
-      }
-      applyAction(action, obj); // Прогнозирование
     }
     else{
       return;
     }
+    actions.push(action);
+    if(server !== undefined){
+      server.action(action);
+    }
+    applyAction(action, obj); // Прогнозирование
   };
   timer.run();
 
