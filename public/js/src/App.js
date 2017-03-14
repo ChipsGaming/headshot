@@ -3,12 +3,15 @@ define(function(require){
     Sprite = require('app/Display/Sprite'),
     Keyboard = require('app/Input/Keyboard'),
     Timer = require('app/Timer/Timer'),
-    ServerMock = require('app/ServerMock/ServerMock'),
+    ServerMockBuilder = require('app/ServerMock/ServerMockBuilder'),
     $ = require('jquery');
 
   var client = new Eureca.Client,
     actionFactory = new ActionFactory,
-    serverMock = new ServerMock(client, 250, 100, new Sprite('serverObject', {x: 0})),
+    serverMock = ServerMockBuilder.getInstance(client, new Sprite('serverObject', {x: 0}))
+      .latency(250)
+      .update(100)
+      .build(),
     serverReal = undefined,
     server = undefined,
     $server = $('#server'),
