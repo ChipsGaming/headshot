@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Headshot</title>
+		<meta charset="utf-8" />
+		<link href="css/main.css" rel="stylesheet">
+		<script type="text/javascript" src="/eureca.js"></script>
+		<script type="text/javascript" src="vendor/require.js" data-main="js/main"></script>
+	</head>
+	<body>
+		<div>
+			<select id="server_type">
+				<option value="off">
+					Не использовать сервер
+				</option>
+				<option value="mock">
+					Использовать виртуальный сервер
+				</option>
+				<option value="real">
+					Использовать реальный сервер
+				</option>
+			</select>
+		</div>
+		<h3>Состояние клиента:</h3>
+		<div class="client-state">
+			<div class="object" id="clientObject"></div>
+		</div>
+		<ul>
+			<li>Неподтвержденных действий: <span id="actions">0</span></li>
+			<li>FPS: 30</li>
+		</ul>
+		<div id="server">
+			<h3>Состояние сервера:</h3>
+			<div class="server-state">
+				<div class="object" id="serverObject"></div>
+			</div>
+			<ul>
+				<li>Задержка: 250ms</li>
+			</ul>
+		</div>
+	</body>
+</html>
