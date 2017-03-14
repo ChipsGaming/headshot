@@ -23,8 +23,8 @@ define(function(require){
       if(!this.actionsQueue.has()){
         return;
       }
-      this.simulateQueue();
-      this.sync();
+      var lastActionId = this.simulateQueue();
+      this.sync(lastActionId);
     }, this), this.update);
 
     return this;
@@ -41,10 +41,14 @@ define(function(require){
   };
 
   ServerMock.prototype.simulateQueue = function(){
-      while(this.actionsQueue.has()){
-        var action = this.actionsQueue.shift()
-        this.simulateAction(action);
-      }
+    var lastActionId = undefined;
+    while(this.actionsQueue.has()){
+      var action = this.actionsQueue.shift()
+      this.simulateAction(action);
+      lastActionId = action.id;
+    }
+
+    return lastActionId;
   };
 
   ServerMock.prototype.simulateAction = function(action){
@@ -60,7 +64,7 @@ define(function(require){
     }
   };
 
-  ServerMock.prototype.sync = function(){
+  ServerMock.prototype.sync = function(id){
     var snapshot = {
       id: id,
       state: this.sprite.state

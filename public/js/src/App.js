@@ -2,6 +2,8 @@ define(function(require){
   var ActionFactory = require('Headshot/Action/ActionFactory'),
     ActionsQueue = require('Headshot/Action/ActionsQueue'),
     Sprite = require('app/Display/Sprite'),
+    SpriteListener = require('app/Stat/SpriteListener'),
+    DiffSpriteListener = require('app/Stat/DiffSpriteListener'),
     Keyboard = require('app/Input/Keyboard'),
     Timer = require('app/Timer/Timer'),
     ServerMockBuilder = require('app/ServerMock/ServerMockBuilder'),
@@ -16,11 +18,7 @@ define(function(require){
     serverReal = undefined,
     server = undefined,
     $server = $('#server'),
-    $serverType = $('#server_type'),
-    $actions = $('#actions'),
-    $x = $('#x'),
-    $serverX = $('#serverX'),
-    $xDiff = $('#xDiff');
+    $serverType = $('#server_type');
 
   $serverType.val('off');
   $server.hide();
@@ -29,6 +27,11 @@ define(function(require){
     timer = new Timer(30),
     keyboard = new Keyboard,
     pendingActions = new ActionsQueue;
+
+  // Статистика
+  new SpriteListener(obj, 'clientSpriteStat');
+  new SpriteListener(serverMock.sprite, 'serverSpriteStat');
+  new DiffSpriteListener(obj, serverMock.sprite, 'diffSpriteStat');
 
   $serverType.change(function(){
     obj.update({x: 0});
@@ -63,25 +66,7 @@ define(function(require){
     }
   }
 
-  function reconciliation(actionsQueue, snapshot){
-    while(actionsQueue.has()){
-      var action = actionsQueue.peep();
-      if(action.id > snapshot.id){
-        simulateAction(action, obj);
-      }
-      else{
-        actionsQueue.shift();
-      }
-    }
-  }
-
   timer.update = function(){
-    $x.html(obj.state.x);
-    if(server !== undefined && server.sprite !== undefined){
-      $serverX.html(server.sprite.state.x);
-      $xDiff.html(obj.state.x - server.sprite.state.x);
-    }
-
     if(keyboard.isLeft){
       var action = actionFactory.create({type: 'left'});
     }
@@ -102,13 +87,28 @@ define(function(require){
   };
   timer.run();
 
+  function reconciliation(actionsQueue, snapshot){
+    var pendingActions = new ActionsQueue;
+
+    while(actionsQueue.has()){
+      var action = actionsQueue.shift();
+      if(action.id <= snapshot.id){
+        continue;
+      }
+      simulateAction(action, obj);
+      pendingActions.push(action);
+    }
+
+    return pendingActions;
+  }
+
   client.exports.sync = function(snapshot){
     obj.update({
       x: snapshot.state.x
     });
 
     // Согласование
-    reconciliation(pendingActions, snapshot)
+    pendingActions = reconciliation(pendingActions, snapshot)
   };
 
   client.ready(function(serverProxy){

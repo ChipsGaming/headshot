@@ -12,6 +12,8 @@ define(function(require){
   Sprite.prototype.update = function(state){
     this.state = state;
     this.$el.css('left', state.x + 'px');
+
+    this.$el.trigger('update');
   };
 
   return Sprite;
