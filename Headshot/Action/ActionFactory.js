@@ -1,6 +1,13 @@
-define(function(require){
-  var Action = require('Headshot/Action/Action');
+/**
+ * @author Artur Sh. Mamedbekov
+ */
+define(function(require, exports, module){
+  var Action = require('./Action');
 
+  /**
+   * @class ActionFactory
+   * @constructor
+   */
   function ActionFactory(actionPrototype){
     this.actionPrototype = actionPrototype || Action;
   }
@@ -13,5 +20,5 @@ define(function(require){
     return new this.actionPrototype(this.generateId(), data);
   };
 
-  return ActionFactory;
+  module.exports = ActionFactory;
 });

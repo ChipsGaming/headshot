@@ -1,4 +1,15 @@
-define(function(require){
+/**
+ * @author Artur Sh. Mamedbekov
+ */
+if(typeof define !== 'function'){
+  var define = require('amdefine')(module);
+}
+
+define(function(require, exports, module){
+  /**
+   * @class ActionsQueue
+   * @constructor
+   */
   function ActionsQueue(){
     this.queue = [];
   }
@@ -23,5 +34,5 @@ define(function(require){
     return this.queue.length > 0;
   };
 
-  return ActionsQueue;
+  module.exports = ActionsQueue;
 });

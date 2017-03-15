@@ -1,5 +1,5 @@
 define(function(require){
-  var ActionsQueue = require('Headshot/Action/ActionsQueue'),
+  var ActionsQueue = require('Action/ActionsQueue'),
     $ = require('jquery');
 
   function ServerMock(client, sprite){

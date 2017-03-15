@@ -1,6 +1,6 @@
 define(function(require){
-  var ActionFactory = require('Headshot/Action/ActionFactory'),
-    ActionsQueue = require('Headshot/Action/ActionsQueue'),
+  var ActionFactory = require('Action/ActionFactory'),
+    ActionsQueue = require('Action/ActionsQueue'),
     Sprite = require('app/Display/Sprite'),
     SpriteListener = require('app/Stat/SpriteListener'),
     DiffSpriteListener = require('app/Stat/DiffSpriteListener'),
@@ -17,16 +17,17 @@ define(function(require){
       .build(),
     serverReal = undefined,
     server = undefined,
+    obj = new Sprite('clientObject', {x: 0}),
+    timer = new Timer(30),
+    keyboard = new Keyboard,
+    pendingActions = new ActionsQueue,
     $server = $('#server'),
     $serverType = $('#server_type');
 
-  $serverType.val('off');
-  $server.hide();
-
-  var obj = new Sprite('clientObject', {x: 0}),
-    timer = new Timer(30),
-    keyboard = new Keyboard,
-    pendingActions = new ActionsQueue;
+  // Статистика
+  new SpriteListener(obj, 'clientSpriteStat');
+  new SpriteListener(serverMock.sprite, 'serverSpriteStat');
+  new DiffSpriteListener(obj, serverMock.sprite, 'diffSpriteStat');
 
   $('#fps').on('change', function(){
     var $this = $(this),
@@ -59,11 +60,6 @@ define(function(require){
     serverMock.latency = latency;
   });
 
-  // Статистика
-  new SpriteListener(obj, 'clientSpriteStat');
-  new SpriteListener(serverMock.sprite, 'serverSpriteStat');
-  new DiffSpriteListener(obj, serverMock.sprite, 'diffSpriteStat');
-
   $serverType.change(function(){
     obj.update({x: 0});
     serverMock.sprite.update({x: 0});
@@ -83,6 +79,8 @@ define(function(require){
     }
     $serverType.blur();
   });
+  $serverType.val('off');
+  $server.hide();
 
   function simulateAction(action, obj){
     if(action.data.type == 'left'){

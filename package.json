@@ -1,20 +1,29 @@
 {
   "name": "headshot",
   "version": "1.0.0",
-  "description": "",
+  "description": "Оригинальная статья: [Fast paced multiplayer](http://www.gabrielgambetta.com/fast_paced_multiplayer.html).",
   "main": "server.js",
   "dependencies": {
-    "eureca.io": "^0.7.1",
+    "amdefine": "^1.0.1",
     "engine.io": "^2.1.0",
+    "eureca.io": "^0.7.1",
     "express": "^4.15.2",
-    "requirejs": "^2.3.3",
-    "jquery": "^3.1.1"
+    "jquery": "^3.1.1",
+    "requirejs": "^2.3.3"
   },
   "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ChipsGaming/headshot.git"
+  },
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ChipsGaming/headshot/issues"
+  },
+  "homepage": "https://github.com/ChipsGaming/headshot#readme"
 }
