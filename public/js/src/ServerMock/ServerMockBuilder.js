@@ -16,7 +16,7 @@ define(function(require){
   };
 
   ServerMockBuilder.prototype.tickrate = function(tickrate){
-    this.serverMock.tickrate = tickrate;
+    this.serverMock.setTickrate(tickrate);
 
     return this;
   };

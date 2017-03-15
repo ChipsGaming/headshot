@@ -1,37 +1,17 @@
 define(function(require){
-  var ActionsQueue = require('Action/ActionsQueue'),
-    $ = require('jquery');
+  var AbstractServer = require('Server/AbstractServer');
 
   function ServerMock(client, sprite){
+    AbstractServer.constructor.apply(this);
+
     this.client = client;
     this.sprite = sprite;
     this.latency = 0;
-    this.tickrate = 1;
-
-    this.actionsQueue = new ActionsQueue;
-    this.interval = undefined;
   }
+  ServerMock.prototype = new AbstractServer;
+  ServerMock.prototype.constructor = ServerMock;
 
   // Process
-  ServerMock.prototype.tick = function(){
-    if(!this.actionsQueue.has()){
-      return;
-    }
-    var lastActionId = this.simulateQueue();
-    this.sync(lastActionId);
-  };
-
-  ServerMock.prototype.simulateQueue = function(){
-    var lastActionId = undefined;
-    while(this.actionsQueue.has()){
-      var action = this.actionsQueue.shift()
-      this.simulateAction(action);
-      lastActionId = action.id;
-    }
-
-    return lastActionId;
-  };
-
   ServerMock.prototype.simulateAction = function(action){
     if(action.data.type == 'left'){
       this.sprite.update({
@@ -53,44 +33,11 @@ define(function(require){
     this.client.exports.sync(snapshot);
   };
 
-  // Control
-  ServerMock.prototype.run = function(){
-    this.interval = setInterval(
-      $.proxy(this.tick, this),
-      this.tickrate
-    );
-
-    return this;
-  };
-
-  ServerMock.prototype.stop = function(){
-    if(this.interval === undefined){
-      return;
-    }
-    clearInterval(this.interval);
-    this.interval = undefined;
-
-    return this;
-  };
-
-  ServerMock.prototype.restart = function(){
-    this.stop();
-    this.run();
-  };
-
-  ServerMock.prototype.setTickrate = function(tickrate){
-    this.tickrate = tickrate;
-
-    if(this.interval !== undefined){
-      this.restart();
-    }
-  };
-
   // Input
   ServerMock.prototype.action = function(action){
-    setTimeout($.proxy(function(){
+    setTimeout((function(){
       this.actionsQueue.push(action);
-    }, this), this.latency);
+    }).bind(this), this.latency);
   };
 
   return ServerMock;

@@ -13,17 +13,17 @@ define(function(require, exports, module){
     Action = require('./../Action/Action');
 
   /**
-   * @class Server
+   * @class AbstractServer
    * @constructor
    */
-  function Server(){
+  function AbstractServer(){
     this.tickrate = 100;
     this.actionsQueue = new ActionsQueue;
     this.interval = undefined;
   }
 
   // Process
-  Server.prototype.tick = function(){
+  AbstractServer.prototype.tick = function(){
     if(!this.actionsQueue.has()){
       return;
     }
@@ -31,7 +31,7 @@ define(function(require, exports, module){
     this.sync(lastActionId);
   };
 
-  Server.prototype.simulateQueue = function(){
+  AbstractServer.prototype.simulateQueue = function(){
     var lastActionId = undefined;
     while(this.actionsQueue.has()){
       var action = this.actionsQueue.shift()
@@ -42,14 +42,14 @@ define(function(require, exports, module){
     return lastActionId;
   };
 
-  Server.prototype.simulateAction = function(action){
+  AbstractServer.prototype.simulateAction = function(action){
   };
 
-  Server.prototype.sync = function(id){
+  AbstractServer.prototype.sync = function(id){
   };
 
   // Control
-  Server.prototype.run = function(){
+  AbstractServer.prototype.run = function(){
     this.interval = setInterval(
       this.tick.bind(this),
       this.tickrate
@@ -58,7 +58,7 @@ define(function(require, exports, module){
     return this;
   };
 
-  Server.prototype.stop = function(){
+  AbstractServer.prototype.stop = function(){
     if(this.interval === undefined){
       return;
     }
@@ -68,25 +68,27 @@ define(function(require, exports, module){
     return this;
   };
 
-  Server.prototype.restart = function(){
+  AbstractServer.prototype.restart = function(){
     this.stop();
     this.run();
 
     return this;
   };
 
-  Server.prototype.setTickrate = function(tickrate){
+  AbstractServer.prototype.setTickrate = function(tickrate){
     this.tickrate = tickrate;
 
     if(this.interval !== undefined){
       this.restart();
     }
+
+    return this;
   };
 
   // Input
-  Server.prototype.action = function(action){
+  AbstractServer.prototype.action = function(action){
     this.actionsQueue.push(action);
   };
 
-  module.exports = Server;
+  module.exports = AbstractServer;
 });
