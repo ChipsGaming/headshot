@@ -19,6 +19,19 @@ define(function(require){
       return;
     }
     clearInterval(this.timer);
+    this.timer = undefined;
+  };
+
+  Timer.prototype.restart = function(){
+    this.stop();
+    this.run();
+  };
+
+  Timer.prototype.setFPS = function(fps){
+    this.fps = fps;
+    if(this.timer !== undefined){
+      this.restart();
+    }
   };
 
   return Timer;

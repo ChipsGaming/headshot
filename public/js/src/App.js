@@ -13,7 +13,7 @@ define(function(require){
     actionFactory = new ActionFactory,
     serverMock = ServerMockBuilder.getInstance(client, new Sprite('serverObject', {x: 0}))
       .latency(250)
-      .update(100)
+      .tickrate(100)
       .build(),
     serverReal = undefined,
     server = undefined,
@@ -27,6 +27,37 @@ define(function(require){
     timer = new Timer(30),
     keyboard = new Keyboard,
     pendingActions = new ActionsQueue;
+
+  $('#fps').on('change', function(){
+    var $this = $(this),
+      fps = parseInt($this.val());
+    if(fps <= 0){
+      fps = 30;
+      $this.val(30);
+    }
+
+    timer.setFPS(fps);
+  });
+  $('#tickrate').on('change', function(){
+    var $this = $(this),
+      tickrate = parseInt($this.val());
+    if(tickrate <= 1){
+      tickrate = 100;
+      $this.val(100);
+    }
+
+    serverMock.setTickrate(tickrate);
+  });
+  $('#latency').on('change', function(){
+    var $this = $(this),
+      latency = parseInt($this.val());
+    if(latency < 0){
+      latency = 250;
+      $this.val(250);
+    }
+
+    serverMock.latency = latency;
+  });
 
   // Статистика
   new SpriteListener(obj, 'clientSpriteStat');

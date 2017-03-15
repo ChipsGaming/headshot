@@ -15,8 +15,8 @@ define(function(require){
     return this;
   };
 
-  ServerMockBuilder.prototype.update = function(update){
-    this.serverMock.update = update;
+  ServerMockBuilder.prototype.tickrate = function(tickrate){
+    this.serverMock.tickrate = tickrate;
 
     return this;
   };
