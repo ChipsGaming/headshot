@@ -10,7 +10,7 @@ GameServer.prototype = new AbstractServer;
 GameServer.prototype.constructor = GameServer;
 
 GameServer.prototype.sync = function(id){
-  var snapshot = new Snapshot(id, this.world.get('Player'));
+  var snapshot = new Snapshot(id, this.world.objects);
 
   this.clients.forEach(function(client){
     client.proxy.sync(snapshot);

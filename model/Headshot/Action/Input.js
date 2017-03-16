@@ -7,8 +7,8 @@ if(typeof define !== 'function'){
 
 define(function(require, exports, module){
   function Input(){
-    this.keyboard = [];
-    this.mouse = [];
+    this.keyboard = {};
+    this.mouse = {};
   }
 
   module.exports = Input;

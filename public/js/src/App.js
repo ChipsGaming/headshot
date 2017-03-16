@@ -3,117 +3,68 @@ define(function(require){
     ActionsQueue = require('Headshot/Action/ActionsQueue'),
     State = require('Headshot/World/State'),
     World = require('Headshot/World/World'),
-    Sprite = require('app/Display/Sprite'),
     Simulator = require('Simulator'),
-    ServerMockBuilder = require('app/ServerMock/ServerMockBuilder'),
-    SpriteListener = require('app/Stat/SpriteListener'),
-    DiffSpriteListener = require('app/Stat/DiffSpriteListener'),
     Keyboard = require('app/Input/Keyboard'),
-    Timer = require('app/Timer/Timer'),
-    $ = require('jquery');
+    $ = require('jquery'),
+    Phaser = require('Phaser');
 
   // World
-  var player = new State('Player'),
-    playerMock = new State('Player'),
+  var myId = undefined,
     world = new World(new Simulator),
-    worldMock = new World(new Simulator),
     actionFactory = new ActionFactory,
-    pendingActions = new ActionsQueue;
-  world.add(player);
-  worldMock.add(playerMock);
+    pendingActions = new ActionsQueue,
+    sprites = {};
 
   // Server
   var client = new Eureca.Client,
-    serverMock = ServerMockBuilder.getInstance(worldMock, client)
-      .latency(250)
-      .tickrate(100)
-      .build(),
-    serverReal = undefined,
     server = undefined;
 
   // Display
-  var playerSprite = new Sprite('clientObject', player),
-    playerMockSprite = new Sprite('serverObject', playerMock),
-    timer = new Timer(30),
-    keyboard = new Keyboard,
-    $server = $('#server'),
-    $serverType = $('#server_type');
+  var keyboard = new Keyboard;
 
-  // Статистика
-  new SpriteListener(playerSprite, 'clientSpriteStat');
-  new SpriteListener(playerMockSprite, 'serverSpriteStat');
-  new DiffSpriteListener(playerSprite, playerMockSprite, 'diffSpriteStat');
+  var game = new Phaser.Game(800, 600, Phaser.AUTO, 'phaser', {
+    preload: function(game){
+      game.load.spritesheet('dude','img/dude.png',32,48);
+    },
+    create: function(game){
+      /*
+      game.time.advancedTiming = true;
+      game.time.desiredFps = 30;
+      */
+      game.physics.startSystem(Phaser.Physics.ARCADE);
+    },
+    update: function(game){
+      if(server === undefined || myId === undefined){
+        return;
+      }
 
-  $('#fps').on('change', function(){
-    var $this = $(this),
-      fps = parseInt($this.val());
-    if(fps <= 0){
-      fps = 30;
-      $this.val(30);
+      for(var id in sprites){
+        var state = world.get(id),
+          sprite = sprites[id];
+
+        sprite.body.velocity.x = state.velocity.x;
+        sprite.body.velocity.y = state.velocity.y;
+        if(state.velocity.x > 0){
+          sprite.animations.play('right');
+        }
+        else if(state.velocity.x < 0){
+          sprite.animations.play('left');
+        }
+        else{
+          sprite.animations.stop();
+          sprite.frame = 4;
+        }
+      }
+
+      var action = actionFactory.create({objectId: myId}, keyboard);
+    
+      if(server !== undefined){
+        server.action(action);
+      }
+      pendingActions.push(action);
+      world.simulate(action); // Прогнозирование
     }
-
-    timer.setFPS(fps);
   });
-  $('#tickrate').on('change', function(){
-    var $this = $(this),
-      tickrate = parseInt($this.val());
-    if(tickrate <= 1){
-      tickrate = 100;
-      $this.val(100);
-    }
-
-    serverMock.setTickrate(tickrate);
-  });
-  $('#latency').on('change', function(){
-    var $this = $(this),
-      latency = parseInt($this.val());
-    if(latency < 0){
-      latency = 250;
-      $this.val(250);
-    }
-
-    serverMock.latency = latency;
-  });
-
-  $serverType.change(function(){
-    player.x = 0;
-    playerMock.x = 0;
-
-    serverMock.stop();
-    if($serverType.val() == 'off'){
-      server = undefined;
-      $server.hide();
-    }
-    else if($serverType.val() == 'mock'){
-      serverMock.run();
-      server = serverMock;
-      $server.show();
-    }
-    else{
-      server = serverReal;
-      $server.hide();
-    }
-    $serverType.blur();
-  });
-  $serverType.val('off');
-  $server.hide();
-
-  timer.update = function(){
-    playerSprite.update();
-    playerMockSprite.update();
-
-    var action = actionFactory.create({objectId: 'Player'}, keyboard);
-    if(action.data.input.keyboard.length == 0 && action.data.input.mouse.length == 0){
-      return;
-    }
-
-    if(server !== undefined){
-      server.action(action);
-    }
-    pendingActions.push(action);
-    world.simulate(action); // Прогнозирование
-  };
-  timer.run();
 
   function reconciliation(actionsQueue, snapshot){
     var pendingActions = new ActionsQueue;
@@ -131,13 +82,37 @@ define(function(require){
   }
 
   client.exports.sync = function(snapshot){
-    player.x = snapshot.state.x;
+    for(var id in snapshot.objects){
+      var state = snapshot.objects[id];
+
+      if(!world.hasId(state.id)){
+        var player = new State(state.id);
+        world.add(player);
+        
+        var playerSprite = game.add.sprite(game.world.width / 2 - 32 / 2, game.world.height / 2 - 48 / 2,'dude');
+        sprites[player.id] = playerSprite;
+        
+        playerSprite.animations.add('left',[0,1,2,3],10,true);
+        playerSprite.animations.add('right',[5,6,7,8],10,true);
+        game.physics.arcade.enable(playerSprite)
+      }
+      else{
+        var player = world.get(state.id);
+      }
+
+      player.velocity.x = state.velocity.x;
+      player.velocity.y = state.velocity.y;
+    }
 
     // Согласование
     pendingActions = reconciliation(pendingActions, snapshot)
   };
 
+  client.exports.hello = function(id){
+    myId = id;
+  };
+
   client.ready(function(serverProxy){
-    serverReal = serverProxy;
+    server = serverProxy;
   });
 });

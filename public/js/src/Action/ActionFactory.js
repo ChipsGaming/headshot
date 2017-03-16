@@ -14,6 +14,12 @@ define(function(require, exports, module){
   };
 
   ActionFactory.createInput = function(keyboard){
+    /*
+    if(!keyboard.isLeft && !keyboard.isTop && !keyboard.isRight && !keyboard.isDown){
+      return undefined;
+    }
+    */
+
     var input = new Input;
     if(keyboard.isLeft){
       input.keyboard[37] = true;

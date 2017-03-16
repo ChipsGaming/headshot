@@ -6,9 +6,9 @@ if(typeof define !== 'function'){
 }
 
 define(function(require, exports, module){
-  function Snapshot(id, state){
+  function Snapshot(id, objects){
     this.id = id;
-    this.state = state;
+    this.objects = objects;
   }
 
   module.exports = Snapshot;

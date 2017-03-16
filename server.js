@@ -10,18 +10,21 @@ var express = require('express'),
 
 var app = express(app),
   server = http.createServer(app),
-  eurecaServer = new Eureca.Server({allow: ['sync']}),
+  eurecaServer = new Eureca.Server({allow: ['sync', 'hello']}),
   clients = new ClientList,
   gameServer = new GameServer(new World(new Simulator), clients);
 
-gameServer.world.add(new State('Player'));
-
 eurecaServer.attach(server);
 eurecaServer.onConnect(function(connection){
-  clients.add(Client.createFromConnection(connection));
+  var client = Client.createFromConnection(connection);
+
+  clients.add(client);
+  gameServer.world.add(new State(client.id));
+  connection.clientProxy.hello(client.id);
 });
 eurecaServer.onDisconnect(function(connection){
   clients.remove(connection.id);
+  gameServer.world.remove(connection.id);
 });
 eurecaServer.exports.action = function(action){
   gameServer.action(action);
@@ -34,6 +37,6 @@ app.get('/', function(req, res, next){
   res.sendfile('public/index.html');
 });
 
-gameServer.setTickrate(50).run();
+gameServer.setTickrate(100).run();
 server.listen(8000);
 console.log('Server running on port 8000');

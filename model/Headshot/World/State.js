@@ -10,7 +10,9 @@ define(function(require, exports, module){
     this.id = id;
     this.x = 0;
     this.y = 0;
-    this.angle = 0;
+    this.velocity = {};
+    this.velocity.x = 0;
+    this.velocity.y = 0;
   }
 
   module.exports = State;

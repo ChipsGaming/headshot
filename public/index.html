@@ -8,46 +8,6 @@
 		<script type="text/javascript" src="requirejs/require.js" data-main="js/main"></script>
 	</head>
 	<body>
-		<div>
-			<select id="server_type">
-				<option value="off">
-					Не использовать сервер
-				</option>
-				<option value="mock">
-					Использовать виртуальный сервер
-				</option>
-				<option value="real">
-					Использовать реальный сервер
-				</option>
-			</select>
-		</div>
-		<div class="row">
-			<div class="col-3">
-				<h3>Состояние клиента:</h3>
-				<div class="client-state">
-					<div class="object" id="clientObject"></div>
-				</div>
-				<div id="server">
-					<h3>Состояние сервера:</h3>
-					<div class="server-state">
-						<div class="object" id="serverObject"></div>
-					</div>
-				</div>
-			</div>
-			<div class="col-1">
-				<h3>Статистика:</h3>
-				<ul>
-					<li>
-						X:
-						<span id="clientSpriteStat">0</span>/
-						<span id="serverSpriteStat">0</span>/
-						<span id="diffSpriteStat">0</span>
-					</li>
-					<li>FPS: <input type="number" id="fps" value="30"/></li>
-					<li>TickRate: <input type="number" id="tickrate" value="100"/>ms</li>
-					<li>Задержка: <input type="number" id="latency" value="250"/>ms</li>
-				</ul>
-			</div>
-		</div>
+		<div id="phaser"></div>
 	</body>
 </html>
