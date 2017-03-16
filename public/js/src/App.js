@@ -29,7 +29,7 @@ define(function(require){
     create: function(game){
       game.time.advancedTiming = true;
       game.time.desiredFps = 30;
-      game.stage.disableVisibilityChange = true;
+      //game.stage.disableVisibilityChange = false;
       game.physics.startSystem(Phaser.Physics.ARCADE);
     },
     update: function(game){
@@ -41,12 +41,11 @@ define(function(require){
         var state = world.get(id),
           sprite = sprites[id];
 
+        sprite.body.x = state.x;
+        sprite.body.y = state.y;
         /*
         sprite.body.velocity.x = state.velocity.x;
         sprite.body.velocity.y = state.velocity.y;
-        */
-        sprite.body.x = state.x;
-        sprite.body.y = state.y;
         if(state.velocity.x > 0){
           sprite.animations.play('right');
         }
@@ -57,11 +56,14 @@ define(function(require){
           sprite.animations.stop();
           sprite.frame = 4;
         }
+        */
       }
 
+      /*
       if(!keyboard.isTop && !keyboard.isDown && !keyboard.isLeft && !keyboard.isRight){
         return;
       }
+      */
       var action = actionFactory.create({objectId: myId}, keyboard);
     
       if(server !== undefined){
@@ -72,6 +74,7 @@ define(function(require){
     },
     render: function(game){
       game.debug.text('FPS: ' + game.time.fps, 10, 20);
+      game.debug.text('ID: ' + myId, 10, 40);
     }
   });
 
@@ -118,7 +121,7 @@ define(function(require){
     }
 
     // Согласование
-    pendingActions = reconciliation(pendingActions, snapshot)
+    pendingActions = reconciliation(pendingActions, snapshot);
   };
 
   client.exports.hello = function(id){
