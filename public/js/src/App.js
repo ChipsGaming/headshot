@@ -112,6 +112,13 @@ define(function(require){
     myId = id;
   };
 
+  client.exports.bye = function(id){
+    world.remove(id);
+    var sprite = sprites[id];
+    delete sprites[id];
+    sprite.kill();
+  };
+
   client.ready(function(serverProxy){
     server = serverProxy;
   });

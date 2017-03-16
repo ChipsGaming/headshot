@@ -10,7 +10,7 @@ var express = require('express'),
 
 var app = express(app),
   server = http.createServer(app),
-  eurecaServer = new Eureca.Server({allow: ['sync', 'hello']}),
+  eurecaServer = new Eureca.Server({allow: ['sync', 'hello', 'bye']}),
   clients = new ClientList,
   gameServer = new GameServer(new World(new Simulator), clients);
 
@@ -25,6 +25,10 @@ eurecaServer.onConnect(function(connection){
 eurecaServer.onDisconnect(function(connection){
   clients.remove(connection.id);
   gameServer.world.remove(connection.id);
+
+  clients.forEach(function(client){
+    client.proxy.bye(connection.id);
+  });
 });
 eurecaServer.exports.action = function(action){
   gameServer.action(action);
