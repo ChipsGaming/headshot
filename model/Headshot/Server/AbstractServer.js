@@ -9,17 +9,16 @@ if(typeof define !== 'function'){
  * @author Artur Sh. Mamedbekov
  */
 define(function(require, exports, module){
-  var ActionsQueue = require('./../Action/ActionsQueue'),
-    Action = require('./../Action/Action');
+  var ActionsQueue = require('./../Action/ActionsQueue');
 
   /**
    * @class AbstractServer
    * @constructor
    */
-  function AbstractServer(){
+  function AbstractServer(world){
+    this.world = world;
     this.tickrate = 100;
     this.actionsQueue = new ActionsQueue;
-    this.interval = undefined;
   }
 
   // Process
@@ -35,14 +34,11 @@ define(function(require, exports, module){
     var lastActionId = undefined;
     while(this.actionsQueue.has()){
       var action = this.actionsQueue.shift()
-      this.simulateAction(action);
+      this.world.simulate(action);
       lastActionId = action.id;
     }
 
     return lastActionId;
-  };
-
-  AbstractServer.prototype.simulateAction = function(action){
   };
 
   AbstractServer.prototype.sync = function(id){
@@ -50,6 +46,10 @@ define(function(require, exports, module){
 
   // Control
   AbstractServer.prototype.run = function(){
+    if(this.interval !== undefined){
+      return;
+    }
+
     this.interval = setInterval(
       this.tick.bind(this),
       this.tickrate
@@ -62,8 +62,9 @@ define(function(require, exports, module){
     if(this.interval === undefined){
       return;
     }
+
     clearInterval(this.interval);
-    this.interval = undefined;
+    delete this.interval;
 
     return this;
   };

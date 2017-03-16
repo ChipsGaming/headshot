@@ -1,12 +1,13 @@
 define(function(require){
-  var ServerMock = require('app/ServerMock/ServerMock');
+  var ServerMock = require('app/ServerMock/ServerMock'),
+    Simulator = require('Simulator');
 
-  function ServerMockBuilder(client, sprite){
-    this.serverMock = new ServerMock(client, sprite);
+  function ServerMockBuilder(world, client, sprite){
+    this.serverMock = new ServerMock(world, client, sprite);
   }
 
-  ServerMockBuilder.getInstance = function(client, sprite){
-    return new ServerMockBuilder(client, sprite);
+  ServerMockBuilder.getInstance = function(world, client, sprite){
+    return new ServerMockBuilder(world, client, sprite);
   };
 
   ServerMockBuilder.prototype.latency = function(latency){

@@ -4,14 +4,13 @@ define(function(require){
   function Sprite(id, state){
     this.id = id;
     this.$el = $('#' + id);
-    this.state = {};
+    this.state = state;
 
-    this.update(state);
+    this.update();
   }
 
-  Sprite.prototype.update = function(state){
-    this.state = state;
-    this.$el.css('left', state.x + 'px');
+  Sprite.prototype.update = function(){
+    this.$el.css('left', this.state.x + 'px');
 
     this.$el.trigger('update');
   };

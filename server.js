@@ -1,30 +1,34 @@
 var express = require('express'),
   http = require('http'),
   Eureca = require('eureca.io'),
-  GameServer = require('./backend/GameServer');
+  Client = require('./model/Headshot/Server/Client'),
+  ClientList = require('./model/Headshot/Server/ClientList'),
+  World = require('./model/Headshot/World/World'),
+  State = require('./model/Headshot/World/State'),
+  Simulator = require('./model/Simulator'),
+  GameServer = require('./model/GameServer');
 
 var app = express(app),
   server = http.createServer(app),
   eurecaServer = new Eureca.Server({allow: ['sync']}),
-  clients = {},
-  gameServer = new GameServer({x: 0}, clients);
+  clients = new ClientList,
+  gameServer = new GameServer(new World(new Simulator), clients);
+
+gameServer.world.add(new State('Player'));
 
 eurecaServer.attach(server);
 eurecaServer.onConnect(function(connection){
-  clients[connection.id] = connection.clientProxy;
+  clients.add(Client.createFromConnection(connection));
 });
 eurecaServer.onDisconnect(function(connection){
-  if(clients[connection.id] === undefined){
-    return;
-  }
-  delete clients[connection.id];
+  clients.remove(connection.id);
 });
 eurecaServer.exports.action = function(action){
   gameServer.action(action);
 };
 
 app.use(express.static('node_modules'));
-app.use(express.static('Headshot'));
+app.use(express.static('model'));
 app.use(express.static('public'));
 app.get('/', function(req, res, next){
   res.sendfile('public/index.html');

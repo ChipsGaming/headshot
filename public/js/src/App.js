@@ -1,33 +1,48 @@
 define(function(require){
-  var ActionFactory = require('Action/ActionFactory'),
-    ActionsQueue = require('Action/ActionsQueue'),
+  var ActionFactory = require('Headshot/Action/ActionFactory'),
+    ActionsQueue = require('Headshot/Action/ActionsQueue'),
+    State = require('Headshot/World/State'),
+    World = require('Headshot/World/World'),
     Sprite = require('app/Display/Sprite'),
+    Simulator = require('Simulator'),
+    ServerMockBuilder = require('app/ServerMock/ServerMockBuilder'),
     SpriteListener = require('app/Stat/SpriteListener'),
     DiffSpriteListener = require('app/Stat/DiffSpriteListener'),
     Keyboard = require('app/Input/Keyboard'),
     Timer = require('app/Timer/Timer'),
-    ServerMockBuilder = require('app/ServerMock/ServerMockBuilder'),
     $ = require('jquery');
 
-  var client = new Eureca.Client,
+  // World
+  var player = new State('Player'),
+    playerMock = new State('Player'),
+    world = new World(new Simulator),
+    worldMock = new World(new Simulator),
     actionFactory = new ActionFactory,
-    serverMock = ServerMockBuilder.getInstance(client, new Sprite('serverObject', {x: 0}))
+    pendingActions = new ActionsQueue;
+  world.add(player);
+  worldMock.add(playerMock);
+
+  // Server
+  var client = new Eureca.Client,
+    serverMock = ServerMockBuilder.getInstance(worldMock, client)
       .latency(250)
       .tickrate(100)
       .build(),
     serverReal = undefined,
-    server = undefined,
-    obj = new Sprite('clientObject', {x: 0}),
+    server = undefined;
+
+  // Display
+  var playerSprite = new Sprite('clientObject', player),
+    playerMockSprite = new Sprite('serverObject', playerMock),
     timer = new Timer(30),
     keyboard = new Keyboard,
-    pendingActions = new ActionsQueue,
     $server = $('#server'),
     $serverType = $('#server_type');
 
   // Статистика
-  new SpriteListener(obj, 'clientSpriteStat');
-  new SpriteListener(serverMock.sprite, 'serverSpriteStat');
-  new DiffSpriteListener(obj, serverMock.sprite, 'diffSpriteStat');
+  new SpriteListener(playerSprite, 'clientSpriteStat');
+  new SpriteListener(playerMockSprite, 'serverSpriteStat');
+  new DiffSpriteListener(playerSprite, playerMockSprite, 'diffSpriteStat');
 
   $('#fps').on('change', function(){
     var $this = $(this),
@@ -61,8 +76,9 @@ define(function(require){
   });
 
   $serverType.change(function(){
-    obj.update({x: 0});
-    serverMock.sprite.update({x: 0});
+    player.x = 0;
+    playerMock.x = 0;
+
     serverMock.stop();
     if($serverType.val() == 'off'){
       server = undefined;
@@ -82,25 +98,14 @@ define(function(require){
   $serverType.val('off');
   $server.hide();
 
-  function simulateAction(action, obj){
-    if(action.data.type == 'left'){
-      obj.update({
-        x: obj.state.x - 5
-      });
-    }
-    else if(action.data.type == 'right'){
-      obj.update({
-        x: obj.state.x + 5
-      });
-    }
-  }
-
   timer.update = function(){
+    playerSprite.update();
+    playerMockSprite.update();
     if(keyboard.isLeft){
-      var action = actionFactory.create({type: 'left'});
+      var action = actionFactory.create({objectId: 'Player', type: 'left'});
     }
-    else if(keyboard.isRight){
-      var action = actionFactory.create({type: 'right'});
+    else if(keyboard.isRight) {
+      var action = actionFactory.create({objectId: 'Player', type: 'right'});
     }
     else{
       return;
@@ -112,7 +117,7 @@ define(function(require){
     pendingActions.push(action);
 
     // Прогнозирование
-    simulateAction(action, obj);
+    world.simulate(action);
   };
   timer.run();
 
@@ -124,7 +129,7 @@ define(function(require){
       if(action.id <= snapshot.id){
         continue;
       }
-      simulateAction(action, obj);
+      world.simulate(action);
       pendingActions.push(action);
     }
 
@@ -132,9 +137,7 @@ define(function(require){
   }
 
   client.exports.sync = function(snapshot){
-    obj.update({
-      x: snapshot.state.x
-    });
+    player.x = snapshot.state.x;
 
     // Согласование
     pendingActions = reconciliation(pendingActions, snapshot)
