@@ -20,10 +20,10 @@ define(function(require, exports, module){
       return;
     }
 
-    if(action.data.type == 'left'){
+    if(action.data.input.keyboard[37]){
       object.x -= 5;
     }
-    else if(action.data.type == 'right'){
+    if(action.data.input.keyboard[39]){
       object.x += 5;
     }
   };

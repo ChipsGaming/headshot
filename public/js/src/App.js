@@ -1,5 +1,5 @@
 define(function(require){
-  var ActionFactory = require('Headshot/Action/ActionFactory'),
+  var ActionFactory = require('app/Action/ActionFactory'),
     ActionsQueue = require('Headshot/Action/ActionsQueue'),
     State = require('Headshot/World/State'),
     World = require('Headshot/World/World'),
@@ -101,13 +101,9 @@ define(function(require){
   timer.update = function(){
     playerSprite.update();
     playerMockSprite.update();
-    if(keyboard.isLeft){
-      var action = actionFactory.create({objectId: 'Player', type: 'left'});
-    }
-    else if(keyboard.isRight) {
-      var action = actionFactory.create({objectId: 'Player', type: 'right'});
-    }
-    else{
+
+    var action = actionFactory.create({objectId: 'Player'}, keyboard);
+    if(action.data.input.keyboard.length == 0 && action.data.input.mouse.length == 0){
       return;
     }
 
@@ -115,9 +111,7 @@ define(function(require){
       server.action(action);
     }
     pendingActions.push(action);
-
-    // Прогнозирование
-    world.simulate(action);
+    world.simulate(action); // Прогнозирование
   };
   timer.run();
 
