@@ -59,6 +59,9 @@ define(function(require){
         }
       }
 
+      if(!keyboard.isTop && !keyboard.isDown && !keyboard.isLeft && !keyboard.isRight){
+        return;
+      }
       var action = actionFactory.create({objectId: myId}, keyboard);
     
       if(server !== undefined){
