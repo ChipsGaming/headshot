@@ -22,15 +22,14 @@ define(function(require){
   // Display
   var keyboard = new Keyboard;
 
-  var game = new Phaser.Game(800, 600, Phaser.AUTO, 'phaser', {
+  var game = new Phaser.Game(800, 600, Phaser.CANVAS, 'phaser', {
     preload: function(game){
       game.load.spritesheet('dude','img/dude.png',32,48);
     },
     create: function(game){
-      /*
       game.time.advancedTiming = true;
       game.time.desiredFps = 30;
-      */
+      game.stage.disableVisibilityChange = true;
       game.physics.startSystem(Phaser.Physics.ARCADE);
     },
     update: function(game){
@@ -42,8 +41,12 @@ define(function(require){
         var state = world.get(id),
           sprite = sprites[id];
 
+        /*
         sprite.body.velocity.x = state.velocity.x;
         sprite.body.velocity.y = state.velocity.y;
+        */
+        sprite.body.x = state.x;
+        sprite.body.y = state.y;
         if(state.velocity.x > 0){
           sprite.animations.play('right');
         }
@@ -63,6 +66,9 @@ define(function(require){
       }
       pendingActions.push(action);
       world.simulate(action); // Прогнозирование
+    },
+    render: function(game){
+      game.debug.text('FPS: ' + game.time.fps, 10, 20);
     }
   });
 
@@ -100,8 +106,12 @@ define(function(require){
         var player = world.get(state.id);
       }
 
+      /*
       player.velocity.x = state.velocity.x;
       player.velocity.y = state.velocity.y;
+      */
+      player.x = state.x;
+      player.y = state.y;
     }
 
     // Согласование
