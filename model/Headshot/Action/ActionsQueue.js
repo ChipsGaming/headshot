@@ -10,26 +10,27 @@ define(function(require, exports, module){
    * @class ActionsQueue
    * @constructor
    */
-  function ActionsQueue(){
+  function ActionsQueue(enbaleSort){
+    this.enbaleSort=enbaleSort||false;
     this.queue = [];
   }
 
-  ActionsQueue.prototype.sort = function(){
-    if(this.queue.length < 2){
-      return;
-    }
-    var i = this.queue.length - 1;
-    while(i > 0 && this.queue[i - 1].id > this.queue[i].id){
-      var prev = this.queue[i - 1];
-      this.queue[i - 1] = this.queue[i];
-      this.queue[i] = prev;
+  ActionsQueue.prototype.sortPush = function(action){
+    var i=this.queue.length-1;
+    while (i>=0) {
+      if (this.queue[i].id<action.id) break;
+      this.queue[i+1]=this.queue[i];
       i--;
     }
+    this.queue[i+1]=action;
   };
 
   ActionsQueue.prototype.push = function(action){
-    this.queue.push(action);
-    //this.sort();
+    if (this.enbaleSort) 
+      this.sortPush(action); 
+    else
+      this.queue.push(action);
+    
   };
 
   ActionsQueue.prototype.shift = function(){

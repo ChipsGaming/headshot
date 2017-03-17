@@ -18,7 +18,7 @@ define(function(require, exports, module){
   function AbstractServer(world){
     this.world = world;
     this.tickrate = 100;
-    this.actionsQueue = new ActionsQueue;
+    this.actionsQueue = new ActionsQueue(true);
   }
 
   // Process
