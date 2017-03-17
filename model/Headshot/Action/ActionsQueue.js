@@ -19,7 +19,7 @@ define(function(require, exports, module){
       return;
     }
     var i = this.queue.length - 1;
-    while(this.queue[i - 1].id > this.queue[i].id){
+    while(i > 0 && this.queue[i - 1].id > this.queue[i].id){
       var prev = this.queue[i - 1];
       this.queue[i - 1] = this.queue[i];
       this.queue[i] = prev;
