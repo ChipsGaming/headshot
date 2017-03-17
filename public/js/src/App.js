@@ -124,8 +124,9 @@ define(function(require){
     pendingActions = reconciliation(pendingActions, snapshot);
   };
 
-  client.exports.hello = function(id){
+  client.exports.hello = function(id, serverTime){
     myId = id;
+    actionFactory.timeDiff=serverTime-Date.now();
   };
 
   client.exports.bye = function(id){
