@@ -42,6 +42,6 @@ app.get('/', function(req, res, next){
   res.sendfile('public/index.html');
 });
 
-gameServer.setTickrate(100).run();
+gameServer.setTickrate(500).run();
 server.listen(8000);
 console.log('Server running on port 8000');
