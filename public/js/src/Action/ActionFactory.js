@@ -6,11 +6,12 @@ define(function(require, exports, module){
    * @class ActionFactory
    * @constructor
    */
-  function ActionFactory(){
+  function ActionFactory(timeDiff){
+    this.timeDiff=timeDiff||0;
   }
 
-  ActionFactory.generateId = function(){
-    return Date.now();
+  ActionFactory.prototype.generateId = function(){
+    return Date.now()+this.timeDiff;
   };
 
   ActionFactory.createInput = function(keyboard){
@@ -38,7 +39,7 @@ define(function(require, exports, module){
   };
 
   ActionFactory.prototype.create = function(data, keyboard){
-    var id = ActionFactory.generateId();
+    var id = this.generateId();
     data.input = ActionFactory.createInput(keyboard);
 
     return new Action(id, data);

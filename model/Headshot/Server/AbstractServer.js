@@ -35,7 +35,8 @@ define(function(require, exports, module){
     while(this.actionsQueue.has()){
       var action = this.actionsQueue.shift()
       this.world.simulate(action);
-      lastActionId = action.id;
+      if (lastActionId>action.id)console.log(lastActionId);
+      lastActionId = action.id;      
     }
 
     return lastActionId;

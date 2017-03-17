@@ -15,7 +15,16 @@ define(function(require, exports, module){
   }
 
   ActionsQueue.prototype.push = function(action){
-    this.queue.push(action);
+    var newQueue=[];
+    i=this.queue.length-1;
+    while (i>0) {
+      if (this.queue[i].id<action.id) break;
+      this.queue[i+1]=this.queue[i];
+      i--;
+    }
+    this.queue[i+1]=action;
+
+    //this.queue.push(action);
   };
 
   ActionsQueue.prototype.shift = function(){
