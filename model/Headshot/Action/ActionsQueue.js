@@ -16,27 +16,13 @@ define(function(require, exports, module){
 
   ActionsQueue.prototype.push = function(action){
     var newQueue=[];
-    i=0;
-    var nextEl=action;
-    var lastEl=action;
-    while (i<this.queue.length) {
-      if (this.queue[i].id>action.id) {
-        nextEl=this.queue[i];
-        this.queue[i]=lastEl;
-        lastEl=nextEl;
-        i++;
-        break;
-      }
-      i++;
+    i=this.queue.length-1;
+    while (i>0) {
+      if (this.queue[i].id<action.id) break;
+      this.queue[i+1]=this.queue[i];
+      i--;
     }
-
-    while (i<this.queue.length) {
-      nextEl=this.queue[i];
-      this.queue[i]=lastEl;   
-      lastEl=nextEl;
-      i++;
-    }
-    this.queue[i]=lastEl;
+    this.queue[i+1]=action;
 
     //this.queue.push(action);
   };
