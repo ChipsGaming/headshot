@@ -9,10 +9,11 @@ function GameServer(world, clients){
 GameServer.prototype = new AbstractServer;
 GameServer.prototype.constructor = GameServer;
 
-GameServer.prototype.sync = function(id){
-  var snapshot = new Snapshot(id, this.world.objects);
+GameServer.prototype.sync = function(lastActionsIdsMap){
+  var worldState = this.world.objects;
 
   this.clients.forEach(function(client){
+    var snapshot = new Snapshot(lastActionsIdsMap[client.id], worldState);
     client.proxy.sync(snapshot);
   });
 };

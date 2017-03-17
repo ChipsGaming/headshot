@@ -29,7 +29,7 @@ define(function(require, exports, module){
 
   ActionsQueue.prototype.push = function(action){
     this.queue.push(action);
-    this.sort();
+    //this.sort();
   };
 
   ActionsQueue.prototype.shift = function(){

@@ -26,20 +26,19 @@ define(function(require, exports, module){
     if(!this.actionsQueue.has()){
       return;
     }
-    var lastActionId = this.simulateQueue();
-    this.sync(lastActionId);
+    var lastActionsIdsMap = this.simulateQueue();
+    this.sync(lastActionsIdsMap);
   };
 
   AbstractServer.prototype.simulateQueue = function(){
-    var lastActionId = undefined;
+    var lastActionsIdsMap = {};
     while(this.actionsQueue.has()){
       var action = this.actionsQueue.shift()
+      lastActionsIdsMap[action.data.clientId] = action.id;
       this.world.simulate(action);
-      if (lastActionId>action.id)console.log(lastActionId);
-      lastActionId = action.id;      
     }
 
-    return lastActionId;
+    return lastActionsIdsMap;
   };
 
   AbstractServer.prototype.sync = function(id){
