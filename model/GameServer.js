@@ -13,7 +13,7 @@ GameServer.prototype.sync = function(lastActionsIdsMap){
   var worldState = this.world.objects;
 
   this.clients.forEach(function(client){
-    var snapshot = new Snapshot(lastActionsIdsMap[client.id], worldState);
+    var snapshot = new Snapshot(lastActionsIdsMap[client.id] || 0, worldState);
     client.proxy.sync(snapshot);
   });
 };
