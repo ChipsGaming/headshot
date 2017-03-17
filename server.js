@@ -22,7 +22,6 @@ eurecaServer.onConnect(function(connection){
   gameServer.world.add(new State(client.id));
   client.proxy.hello(client.id);
 });
-
 eurecaServer.onDisconnect(function(connection){
   clients.remove(connection.id);
   gameServer.world.remove(connection.id);
