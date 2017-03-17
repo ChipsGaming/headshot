@@ -5,6 +5,7 @@ define(function(require){
     World = require('Headshot/World/World'),
     Simulator = require('Simulator'),
     Keyboard = require('app/Input/Keyboard'),
+    Debug = require('app/Debug/Debug'),
     $ = require('jquery'),
     Phaser = require('Phaser');
 
@@ -20,7 +21,8 @@ define(function(require){
     server = undefined;
 
   // Display
-  var keyboard = new Keyboard;
+  var keyboard = new Keyboard,
+    debug = new Debug($('#debug'));
 
   var game = new Phaser.Game(800, 600, Phaser.CANVAS, 'phaser', {
     preload: function(game){
@@ -59,11 +61,9 @@ define(function(require){
         */
       }
 
-      /*
       if(!keyboard.isTop && !keyboard.isDown && !keyboard.isLeft && !keyboard.isRight){
         return;
       }
-      */
       var action = actionFactory.create({objectId: myId}, keyboard);
     
       if(server !== undefined){
@@ -94,6 +94,8 @@ define(function(require){
   }
 
   client.exports.sync = function(snapshot){
+    debug.log('Sync', snapshot.id)
+
     for(var id in snapshot.objects){
       var state = snapshot.objects[id];
 
@@ -107,6 +109,8 @@ define(function(require){
         playerSprite.animations.add('left',[0,1,2,3],10,true);
         playerSprite.animations.add('right',[5,6,7,8],10,true);
         game.physics.arcade.enable(playerSprite)
+
+        debug.log('New player', state.id);
       }
       else{
         var player = world.get(state.id);
@@ -126,6 +130,8 @@ define(function(require){
 
   client.exports.hello = function(id){
     myId = id;
+
+    debug.log('My id', myId);
   };
 
   client.exports.bye = function(id){
@@ -133,6 +139,8 @@ define(function(require){
     var sprite = sprites[id];
     delete sprites[id];
     sprite.kill();
+
+    debug.log('Client disabled', id);
   };
 
   client.ready(function(serverProxy){
