@@ -14,17 +14,19 @@ define(function(require, exports, module){
     this.queue = [];
   }
 
-  ActionsQueue.prototype.push = function(action){
-    var newQueue=[];
-    i=this.queue.length-1;
-    while (i>0) {
-      if (this.queue[i].id<action.id) break;
-      this.queue[i+1]=this.queue[i];
+  ActionsQueue.prototype.sort = function(){
+    var i = this.queue.length - 1;
+    while(this.queue[i - 1] > this.queue[i]){
+      var prev = this.queue[i - 1];
+      this.queue[i - 1] = this.queue[i];
+      this.queue[i] = prev;
       i--;
     }
-    this.queue[i+1]=action;
+  };
 
-    //this.queue.push(action);
+  ActionsQueue.prototype.push = function(action){
+    this.queue.push(action);
+    this.sort();
   };
 
   ActionsQueue.prototype.shift = function(){
