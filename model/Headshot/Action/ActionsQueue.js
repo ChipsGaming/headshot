@@ -15,6 +15,9 @@ define(function(require, exports, module){
   }
 
   ActionsQueue.prototype.sort = function(){
+    if(this.queue.length < 2){
+      return;
+    }
     var i = this.queue.length - 1;
     while(this.queue[i - 1].id > this.queue[i].id){
       var prev = this.queue[i - 1];
