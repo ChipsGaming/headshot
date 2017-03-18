@@ -37,6 +37,8 @@ define(function(require, exports, module){
       //object.velocity.y = 250;
     }
 
+    world.update();
+
     /*
     if(action.data.input.keyboard[37] === undefined && action.data.input.keyboard[39] === undefined){
       object.velocity.x /= 2;

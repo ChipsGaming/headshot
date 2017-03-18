@@ -9,6 +9,7 @@ define(function(require, exports, module){
   function World(simulator){
     this.simulator = simulator;
     this.objects = {};
+    this.update=function () {};
   }
 
   // Controls
@@ -38,6 +39,8 @@ define(function(require, exports, module){
     }
     return this.objects[id];
   };
+
+  
 
   // Actions
   World.prototype.simulate = function(action){

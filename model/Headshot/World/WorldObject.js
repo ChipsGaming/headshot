@@ -16,5 +16,16 @@ define(function(require, exports, module){
         this.type=type;
     }
 
+    WorldObject.prototype.cloneTo=function(base) {
+        base.id=base.id||this.id;
+        base.x=base.x||this.x;
+        base.y=base.y||this.y;
+        base.velocity=base.velocity||this.velocity;
+        base.velocity.x=base.velocity.x||this.velocity.x;
+        base.velocity.y=base.velocity.y||this.velocity.y;
+        base.type=base.type||this.type;
+        return base;
+    }
+
     module.exports = WorldObject;
 });

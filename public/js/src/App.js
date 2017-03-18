@@ -13,8 +13,8 @@ define(function(require){
   var myId = undefined,
     world = new World(new Simulator),
     actionFactory = new ActionFactory,
-    pendingActions = new ActionsQueue,
-    sprites = {};
+    pendingActions = new ActionsQueue;
+    //sprites = {};
   
   var woFactory=new WorldObjectFactory();
 
@@ -41,13 +41,13 @@ define(function(require){
         return;
       }
 
-      for(var id in sprites){
+      /*for(var id in sprites){
         var worldObject = world.get(id),
         sprite = sprites[id];
 
-        sprite.body.x = worldObject.x;
-        sprite.body.y = worldObject.y;
-        /*
+        sprite.x = worldObject.x;
+        sprite.y = worldObject.y;
+        
         sprite.body.velocity.x = state.velocity.x;
         sprite.body.velocity.y = state.velocity.y;
         if(state.velocity.x > 0){
@@ -60,8 +60,8 @@ define(function(require){
           sprite.animations.stop();
           sprite.frame = 4;
         }
-        */
-      }
+        
+      }*/
 
       if(!keyboard.isTop && !keyboard.isDown && !keyboard.isLeft && !keyboard.isRight){
         return;
@@ -95,35 +95,28 @@ define(function(require){
     return pendingActions;
   }
 
+  function createPlayer(id) {  
+    debug.log('Create player: ', snapshot.id);         
+    var playerSprite = game.add.sprite(0, 0,'dude');              
+    playerSprite.animations.add('left',[0,1,2,3],10,true);
+    playerSprite.animations.add('right',[5,6,7,8],10,true);
+    game.physics.arcade.enable(playerSprite);
+    
+    var player = woFactory.createFromBase(id,playerSprite);
+    world.add(player);
+
+    return player;
+  }
+
   client.exports.sync = function(snapshot){
-    debug.log('Sync', snapshot.id)
+    debug.log('Sync', snapshot.id);
 
     for(var id in snapshot.objects){
-      var worldObject = snapshot.objects[id];
+      var snapshotObject = snapshot.objects[id];
+      var player=world.hasId(snapshotObject.id)?world.get(snapshotObject.id):createPlayer(snapshotObject.id);      
 
-      if(!world.hasId(worldObject.id)){
-        var player = woFactory.create(worldObject.id);
-        world.add(player);
-        
-        var playerSprite = game.add.sprite(game.world.width / 2 - 32 / 2, game.world.height / 2 - 48 / 2,'dude');
-        sprites[player.id] = playerSprite;
-        
-        playerSprite.animations.add('left',[0,1,2,3],10,true);
-        playerSprite.animations.add('right',[5,6,7,8],10,true);
-        game.physics.arcade.enable(playerSprite)
-
-        debug.log('New player', worldObject.id);
-      }
-      else{
-        var player = world.get(worldObject.id);
-      }
-
-      /*
-      player.velocity.x = state.velocity.x;
-      player.velocity.y = state.velocity.y;
-      */
-      player.x = worldObject.x;
-      player.y = worldObject.y;
+      player.x = snapshotObject.x;
+      player.y = snapshotObject.y;
     }
 
     // Согласование
@@ -132,15 +125,15 @@ define(function(require){
 
   client.exports.hello = function(id){
     myId = id;
-
+    createPlayer(id);
     debug.log('My id', myId);
   };
 
   client.exports.bye = function(id){
-    world.remove(id);
-    var sprite = sprites[id];
-    delete sprites[id];
-    sprite.kill();
+    if (world.hasId(id)) {
+      var player=world.get(id);  
+      player.kill();
+    }
 
     debug.log('Client disabled', id);
   };

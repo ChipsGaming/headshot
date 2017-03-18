@@ -17,6 +17,11 @@ define(function(require, exports, module){
                                 type||this.Types.player);
     }
 
+    WorldObjectFactory.prototype.createFromBase=function (id, base, type) {
+        var wObject= new WorldObject(id||this.idIterator++, type||this.Types.player);
+        return wObject.cloneTo(base);
+    }
+
     WorldObjectFactory.prototype.Types={player:0, barrier:1};
     
     module.exports = WorldObjectFactory;

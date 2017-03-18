@@ -7,12 +7,11 @@ if(typeof define !== 'function'){
 
 define(function(require, exports, module){
     function D2() {
-      
     }
 
     //Нужно дописать метод
     D2.prototype.enable = function (worldObject) {
-      worldObject.body={};
+      worldObject.body=worldObject.body||{};
       worldObject.immovable=false;
     }
 
