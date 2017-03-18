@@ -45,11 +45,11 @@ define(function(require, exports, module){
     }
   }
 
-  function interpolation(n, startX,startY, endX, endY, duration) {
-    var xLinear = linear(startX, endX, n / duration);
-    var yLinear = linear(startY, endY, n / duration);  
-    
-    return {x:xLinear, y:yLinear};
+  function interpolation(n, startX, startY, endX, endY, duration) {
+    return {
+      x: linear(startX, endX, n / duration),
+      y: linear(startY, endY, n / duration)
+    };
   }
 
   function linear (p0, p1, t) {
