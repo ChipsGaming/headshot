@@ -29,8 +29,7 @@ define(function(require, exports, module){
     if (this.enbaleSort) 
       this.sortPush(action); 
     else
-      this.queue.push(action);
-    
+      this.queue.push(action);    
   };
 
   ActionsQueue.prototype.shift = function(){

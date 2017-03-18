@@ -6,14 +6,18 @@ if(typeof define !== 'function'){
 }
 
 define(function(require, exports, module){
-    WorldObject = require('./WorldObject')
+    WorldObject = require('./WorldObject');
+    
     function WorldObjectFactory(){
         this.idIterator=0;
     }
 
-    WorldObjectFactory.prototype.create= function (id) {
-        return new WorldObject(id||this.idIterator++);
-    }    
+    WorldObjectFactory.prototype.create= function (id,type) {
+        return new WorldObject(id||this.idIterator++,
+                                type||this.Types.player);
+    }
+
+    WorldObjectFactory.prototype.Types={player:0, barrier:1};
     
     module.exports = WorldObjectFactory;
 });

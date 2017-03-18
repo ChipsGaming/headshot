@@ -13,6 +13,7 @@ define(function(require, exports, module){
     //Нужно дописать метод
     D2.prototype.enable = function (worldObject) {
       worldObject.body={};
+      worldObject.immovable=false;
     }
 
     module.exports = D2;
