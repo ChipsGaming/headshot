@@ -26,7 +26,9 @@ define(function(require, exports, module){
     if (this.enableInterpolation) {
       for (var c in this.objects) {
         var player=this.objects[c];
-        if (player.target!=undefined) {                   //Если у объекта есть "цель" - цель есть только у Интерполируемых объектов
+        // Если у объекта есть "цель"
+        // цель есть только у Интерполируемых объектов
+        if (player.target!=undefined) {
           var duration=this.changeTime-this.lastChangeTime;
           if (player.target.step<duration) {                
             var n=player.target.step;

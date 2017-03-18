@@ -18,7 +18,6 @@ define(function(require, exports, module){
     }
 
     WorldObjectFactory.prototype.createFromBase=function (id, base, enableTarget,type ) {
-        
         var wObject= new WorldObject(id||this.idIterator++, enableTarget, type||this.Types.player);
         return wObject.cloneTo(base);
     }

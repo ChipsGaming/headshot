@@ -21,7 +21,6 @@ define(function(require, exports, module){
             this.target.startX=0;
             this.target.starty=0;
         }
-        
     }
 
     WorldObject.prototype.cloneTo=function(base) {
@@ -57,10 +56,6 @@ define(function(require, exports, module){
         this.x=pos.x;
         this.y=pos.y;
     }
-
-    
-
-
 
     module.exports = WorldObject;
 });
