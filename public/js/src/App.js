@@ -96,7 +96,7 @@ define(function(require){
   }
 
   function createPlayer(id) {  
-    debug.log('Create player: ', snapshot.id);         
+    debug.log('Create player: ', id);         
     var playerSprite = game.add.sprite(0, 0,'dude');              
     playerSprite.animations.add('left',[0,1,2,3],10,true);
     playerSprite.animations.add('right',[5,6,7,8],10,true);
