@@ -84,8 +84,6 @@ define(function(require, exports, module){
     return this.objects[id];
   };
 
-  
-
   // Actions
   World.prototype.simulate = function(action){
     this.simulator.simulate(this, action);
