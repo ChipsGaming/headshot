@@ -12,13 +12,14 @@ define(function(require, exports, module){
         this.idIterator=0;
     }
 
-    WorldObjectFactory.prototype.create= function (id,type) {
+    WorldObjectFactory.prototype.create= function (id,enableTarget,type) {
         return new WorldObject(id||this.idIterator++,
-                                type||this.Types.player);
+                                type||this.Types.player, enableTarget);
     }
 
-    WorldObjectFactory.prototype.createFromBase=function (id, base, type) {
-        var wObject= new WorldObject(id||this.idIterator++, type||this.Types.player);
+    WorldObjectFactory.prototype.createFromBase=function (id, base, enableTarget,type ) {
+        
+        var wObject= new WorldObject(id||this.idIterator++, enableTarget, type||this.Types.player);
         return wObject.cloneTo(base);
     }
 

@@ -31,6 +31,7 @@ eurecaServer.onDisconnect(function(connection){
     client.proxy.bye(connection.id);
   });
 });
+
 eurecaServer.exports.action = function(action){
   action.data.clientId = this.user.clientId;
   gameServer.action(action);
@@ -43,6 +44,6 @@ app.get('/', function(req, res, next){
   res.sendfile('public/index.html');
 });
 
-gameServer.setTickrate(500).run();
+gameServer.setTickrate(100).run();
 server.listen(8000);
 console.log('Server running on port 8000');

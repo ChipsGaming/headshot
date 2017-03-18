@@ -37,7 +37,8 @@ define(function(require, exports, module){
       //object.velocity.y = 250;
     }
 
-    world.update();
+    //Временная метка нужна для интерполяции
+    world.changeTime=Date.now();
 
     /*
     if(action.data.input.keyboard[37] === undefined && action.data.input.keyboard[39] === undefined){

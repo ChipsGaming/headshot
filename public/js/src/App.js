@@ -11,7 +11,7 @@ define(function(require){
 
   // World
   var myId = undefined,
-    world = new World(new Simulator),
+    world = new World(new Simulator(),true),
     actionFactory = new ActionFactory,
     pendingActions = new ActionsQueue;
     //sprites = {};
@@ -95,14 +95,17 @@ define(function(require){
     return pendingActions;
   }
 
-  function createPlayer(id) {  
-    debug.log('Create player: ', id);         
+  /*enbaleTarget- указывает, что у объекта будет "цель".
+  *"цель есть только у интерполируемых объектов
+  */
+  function createPlayer(id,enableTarget) {
+    debug.log('Create player', id);         
     var playerSprite = game.add.sprite(0, 0,'dude');              
     playerSprite.animations.add('left',[0,1,2,3],10,true);
     playerSprite.animations.add('right',[5,6,7,8],10,true);
     game.physics.arcade.enable(playerSprite);
     
-    var player = woFactory.createFromBase(id,playerSprite);
+    var player = woFactory.createFromBase(id,playerSprite,enableTarget);
     world.add(player);
 
     return player;
@@ -111,12 +114,19 @@ define(function(require){
   client.exports.sync = function(snapshot){
     debug.log('Sync', snapshot.id);
 
+    world.lastChangeTime=world.changeTime;
+    world.changeTime=snapshot.changeTime;
+    
     for(var id in snapshot.objects){
       var snapshotObject = snapshot.objects[id];
-      var player=world.hasId(snapshotObject.id)?world.get(snapshotObject.id):createPlayer(snapshotObject.id);      
+      var player=world.hasId(snapshotObject.id)?world.get(snapshotObject.id):createPlayer(snapshotObject.id,true); 
 
-      player.x = snapshotObject.x;
-      player.y = snapshotObject.y;
+      if (id!=myId) {
+        player.setTargetPos({x:snapshotObject.x,y:snapshotObject.y});  //Интерполяционная позиция
+      } else {
+        player.setPos({x:snapshotObject.x,y:snapshotObject.y});
+      }
+
     }
 
     // Согласование
