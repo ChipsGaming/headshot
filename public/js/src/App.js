@@ -43,8 +43,7 @@ define(function(require){
 
       for(var id in sprites){
         var worldObject = world.get(id),
-          sprite = sprites[id];
-        console.log(worldObject.type);
+        sprite = sprites[id];
 
         sprite.body.x = worldObject.x;
         sprite.body.y = worldObject.y;
