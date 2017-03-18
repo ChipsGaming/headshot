@@ -1,7 +1,7 @@
 define(function(require){
   var ActionFactory = require('app/Action/ActionFactory'),
     ActionsQueue = require('Headshot/Action/ActionsQueue'),
-    State = require('Headshot/World/State'),
+    WorldObjectFactory = require('Headshot/World/WorldObjectFactory'),
     World = require('Headshot/World/World'),
     Simulator = require('Simulator'),
     Keyboard = require('app/Input/Keyboard'),
@@ -15,6 +15,8 @@ define(function(require){
     actionFactory = new ActionFactory,
     pendingActions = new ActionsQueue,
     sprites = {};
+  
+  var woFactory=new WorldObjectFactory();
 
   // Server
   var client = new Eureca.Client,
@@ -40,11 +42,11 @@ define(function(require){
       }
 
       for(var id in sprites){
-        var state = world.get(id),
+        var worldObject = world.get(id),
           sprite = sprites[id];
 
-        sprite.body.x = state.x;
-        sprite.body.y = state.y;
+        sprite.body.x = worldObject.x;
+        sprite.body.y = worldObject.y;
         /*
         sprite.body.velocity.x = state.velocity.x;
         sprite.body.velocity.y = state.velocity.y;
@@ -97,10 +99,10 @@ define(function(require){
     debug.log('Sync', snapshot.id)
 
     for(var id in snapshot.objects){
-      var state = snapshot.objects[id];
+      var worldObject = snapshot.objects[id];
 
-      if(!world.hasId(state.id)){
-        var player = new State(state.id);
+      if(!world.hasId(worldObject.id)){
+        var player = woFactory.create(worldObject.id);
         world.add(player);
         
         var playerSprite = game.add.sprite(game.world.width / 2 - 32 / 2, game.world.height / 2 - 48 / 2,'dude');
@@ -110,18 +112,18 @@ define(function(require){
         playerSprite.animations.add('right',[5,6,7,8],10,true);
         game.physics.arcade.enable(playerSprite)
 
-        debug.log('New player', state.id);
+        debug.log('New player', worldObject.id);
       }
       else{
-        var player = world.get(state.id);
+        var player = world.get(worldObject.id);
       }
 
       /*
       player.velocity.x = state.velocity.x;
       player.velocity.y = state.velocity.y;
       */
-      player.x = state.x;
-      player.y = state.y;
+      player.x = worldObject.x;
+      player.y = worldObject.y;
     }
 
     // Согласование

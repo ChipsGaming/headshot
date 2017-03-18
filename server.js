@@ -4,10 +4,11 @@ var express = require('express'),
   Client = require('./model/Headshot/Server/Client'),
   ClientList = require('./model/Headshot/Server/ClientList'),
   World = require('./model/Headshot/World/World'),
-  State = require('./model/Headshot/World/State'),
+  WorldObjectFactory = require('./model/Headshot/World/WorldObjectFactory'),
   Simulator = require('./model/Simulator'),
   GameServer = require('./model/GameServer');
 
+var woFactory=new WorldObjectFactory();
 var app = express(app),
   server = http.createServer(app),
   eurecaServer = new Eureca.Server({allow: ['sync', 'hello', 'bye']}),
@@ -19,7 +20,7 @@ eurecaServer.onConnect(function(connection){
   var client = Client.createFromConnection(connection);
 
   clients.add(client);
-  gameServer.world.add(new State(client.id));
+  gameServer.world.add( woFactory.create(client.id));
   client.proxy.hello(client.id);
 });
 eurecaServer.onDisconnect(function(connection){

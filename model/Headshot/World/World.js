@@ -12,16 +12,16 @@ define(function(require, exports, module){
   }
 
   // Controls
-  World.prototype.add = function(state){
-    this.objects[state.id] = state;
+  World.prototype.add = function(worldObject){
+    this.objects[worldObject.id] = worldObject;
   };
 
   World.prototype.hasId = function(id){
     return this.objects[id] !== undefined;
   };
 
-  World.prototype.has = function(state){
-    return this.hasId(state.id);
+  World.prototype.has = function(worldObject){
+    return this.hasId(worldObject.id);
   };
 
   World.prototype.remove = function(id){
