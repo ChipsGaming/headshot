@@ -15,7 +15,7 @@ define(function(require, exports, module){
         //Для интерполяции
         if (enableTarget||false) {
             this.target = {};
-            this.target.updateTickRate=0;
+            this.target.stepstep=0;
             this.target.x = 0;
             this.target.y = 0;
             this.target.startX=0;
@@ -50,7 +50,7 @@ define(function(require, exports, module){
         this.target.startY=this.y;
         this.target.x=pos.x;
         this.target.y=pos.y;
-        this.target.updateTickRate=0;
+        this.target.step=0;
     }
 
     WorldObject.prototype.setPos=function(pos) {

@@ -22,7 +22,6 @@ define(function(require, exports, module){
   }
 
   function update () {
-
     //Интерполяция
     if (this.enableInterpolation) {
       for (var c in this.objects) {
@@ -30,9 +29,9 @@ define(function(require, exports, module){
         if (player.target!=undefined) {                   //Если у объекта есть "цель" - цель есть только у Интерполируемых объектов
           var duration=this.changeTime-this.lastChangeTime;
           if (player.target.step<duration) {                
-            var n=player.target.updateTickRate;
+            var n=player.target.step;
 
-            player.target.updateTickRate+=this.updateTickRate;
+            player.target.step+=this.updateTickRate;
 
             var startX=player.target.startX;
             var startY=player.target.startY;
