@@ -11,14 +11,20 @@ define(function(require, exports, module){
     this.objects = {};
 
     //Временные метки необходимые для интерполяции
-    this.lastChangeTime=0;
-    this.changeTime=0;
+    this.worldTime=0;
+    this.duration=0;
 
     this.updateTickRate=25;
 
     this.update=function () {};
     this.enableInterpolation=enableInterpolation||false;
     setInterval(update.bind(this),this.updateTickRate);    
+  }
+
+  //Задает новое время мира
+  World.prototype.setWorldTime=function(newTime) {
+    this.duration=this.worldTime==0?10:newTime-this.worldTime;
+    this.worldTime=newTime;
   }
 
   function update () {
@@ -28,9 +34,9 @@ define(function(require, exports, module){
         var player=this.objects[c];
         // Если у объекта есть "цель"
         // цель есть только у Интерполируемых объектов
-        if (player.target!=undefined) {
-          var duration=this.changeTime-this.lastChangeTime;
-          if (player.target.step<duration) {                
+        if ((player.target!=undefined)&&(this.duration>0)) {
+          var duration=this.duration;
+          if (player.target.step<=duration) {                      
             var n=player.target.step;
 
             player.target.step+=this.updateTickRate;
@@ -40,8 +46,11 @@ define(function(require, exports, module){
             var endX=player.target.x;
             var endY=player.target.y;
 
-            player.setPos(interpolation(n, startX,startY, endX, endY, duration));
+            player.setPos(interpolation(n, startX,startY, endX, endY, duration));          
+          } else {
+            player.setPos({x:player.target.x, y:player.target.y});
           }
+
         }
       }
     }

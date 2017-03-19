@@ -38,7 +38,7 @@ define(function(require, exports, module){
     }
 
     //Временная метка нужна для интерполяции
-    world.changeTime=Date.now();
+    world.worldTime=Date.now();
 
     /*
     if(action.data.input.keyboard[37] === undefined && action.data.input.keyboard[39] === undefined){

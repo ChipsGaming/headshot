@@ -6,10 +6,10 @@ if(typeof define !== 'function'){
 }
 
 define(function(require, exports, module){
-  function Snapshot(id, objects,changeTime){
+  function Snapshot(id, objects,worldTime){
     this.id = id;
     this.objects = objects;
-    this.changeTime=changeTime;
+    this.worldTime=worldTime;
   }
 
   module.exports = Snapshot;

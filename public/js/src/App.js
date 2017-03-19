@@ -113,9 +113,7 @@ define(function(require){
 
   client.exports.sync = function(snapshot){
     debug.log('Sync', snapshot.id);
-
-    world.lastChangeTime=world.changeTime;
-    world.changeTime=snapshot.changeTime;
+    world.setWorldTime(snapshot.worldTime);
     
     for(var id in snapshot.objects){
       var snapshotObject = snapshot.objects[id];

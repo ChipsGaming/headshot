@@ -12,7 +12,7 @@ GameServer.prototype.sync = function(lastActionsIdsMap){
   var world = this.world;
   this.clients.forEach(function(client){
     var id = lastActionsIdsMap[client.id] || 0,
-      snapshot = new Snapshot(id, world.objects, world.changeTime);
+      snapshot = new Snapshot(id, world.objects, world.worldTime);
 
     client.proxy.sync(snapshot);
   });
