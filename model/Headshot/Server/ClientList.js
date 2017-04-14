@@ -10,7 +10,7 @@ define(function(require, exports, module){
     this.list = {};
   }
 
-  // Добавление клиента в список
+  // Add client to list
   ClientList.prototype.add = function(client){
     this.list[client.id] = client;
   };
@@ -19,12 +19,12 @@ define(function(require, exports, module){
     return this.list[id] !== undefined;
   };
 
-  // Проверка присутствует ли клиент в списке
+  // Checking on contains list the specified element
   ClientList.prototype.has = function(client){
     return this.hasId(client.id);
   };
 
-  // Удаление клиента из списка
+  // Remove client from list
   ClientList.prototype.remove = function(id){
     if(!this.hasId(id)){
       return;
@@ -34,7 +34,7 @@ define(function(require, exports, module){
   };
 
   // ???
-  // Отправка сообщение клиенту о том что он отключился от сервера
+  // Send message to client when disconnecting
   ClientList.prototype.forEach = function(callback){
     for(var id in this.list){
       callback.call(this, this.list[id]);

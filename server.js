@@ -52,7 +52,7 @@ eurecaServer.onDisconnect(function(connection) {
 
 /**
  * Server exposed this method client side
- * Клиент отправляет 'Действие' серверу
+ * Client send Action to server
  */
 eurecaServer.exports.action = function(action){
   action.data.clientId = this.user.clientId;

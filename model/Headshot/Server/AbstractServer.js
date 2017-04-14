@@ -30,21 +30,27 @@ define(function(require, exports, module){
     this.sync(lastActionsIdsMap);
   };
 
+  // Simulate game world by clients actions
   AbstractServer.prototype.simulateQueue = function(){
     var lastActionsIdsMap = {};
-    while(this.actionsQueue.has()){
+    // Iterate all actions in queue
+    while(this.actionsQueue.has()) {
+      // Delete action from queue
       var action = this.actionsQueue.shift()
+      // Add action in map
       lastActionsIdsMap[action.data.clientId] = action.id;
+      // Simulate action
       this.world.simulate(action);
     }
 
     return lastActionsIdsMap;
   };
 
+  // Synchronization
   AbstractServer.prototype.sync = function(id){
   };
 
-  // Control
+  // Start game server
   AbstractServer.prototype.run = function(){
     if(this.interval !== undefined){
       return;
@@ -58,6 +64,7 @@ define(function(require, exports, module){
     return this;
   };
 
+  // Stop game server
   AbstractServer.prototype.stop = function(){
     if(this.interval === undefined){
       return;
@@ -69,6 +76,7 @@ define(function(require, exports, module){
     return this;
   };
 
+  // Restart game server
   AbstractServer.prototype.restart = function(){
     this.stop();
     this.run();
@@ -76,6 +84,7 @@ define(function(require, exports, module){
     return this;
   };
 
+  // Set tick rate
   AbstractServer.prototype.setTickrate = function(tickrate){
     this.tickrate = tickrate;
 
@@ -86,7 +95,7 @@ define(function(require, exports, module){
     return this;
   };
 
-  // Input
+  // When client input and server receive action from client
   AbstractServer.prototype.action = function(action){
     this.actionsQueue.push(action);
   };

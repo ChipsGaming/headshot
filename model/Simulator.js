@@ -14,6 +14,7 @@ define(function(require, exports, module){
   Simulator.prototype = new AbstractSimulator;
   Simulator.prototype.constructor = Simulator;
 
+  // Simulate game world by clients action
   Simulator.prototype.simulate = function(world, action){
     var object = world.get(action.data.objectId);
     if(object === undefined){

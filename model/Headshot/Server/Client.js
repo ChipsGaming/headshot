@@ -11,7 +11,7 @@ define(function(require, exports, module){
     this.proxy = proxy;
   }
 
-  // Создание клиента используя информацию о соединении
+  // Create client from connection
   Client.createFromConnection = function(connection){
     return new Client(connection.id, connection.clientProxy);
   };
